@@ -78,8 +78,7 @@ function packageApp(platform, callback) {
         install({
           'src': ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
           'dest': ('../release-'+platform),
-          'arch': 'x86_64',
-          'for': 'both'
+          'arch': 'x86_64'
         }).then(function(success) {
           console.log('[Desktop-release:'+platform+'] Done.');
           console.log(success);
