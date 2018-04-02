@@ -7,4 +7,5 @@ build-desktop/
 build-cache/
 .expo/
 bin/.expo/
+release-win32-x64/
 

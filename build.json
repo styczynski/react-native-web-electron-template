@@ -1,15 +1,24 @@
 {
   "dev": {
-    "expo-server-ip":   "192.168.2.2",
-    "web-server-port":  "3000",
-    "web-server-cache": "enabled",
-    "web-server-lint":  "disabled",
+    "expo-server-ip":     "192.168.2.2",
+    "web-server-port":    "3000",
+    "web-server-cache":   "enabled",
+    "web-server-lint":    "disabled",
     "define": {}
   },
   "release": {
-    "lint":             "enabled",
-    "expo-user-env":    "EXPO_USER_LOGIN",
-    "expo-passwd-env":  "EXPO_USER_PASSWD",
+    "lint":               "enabled",
+    "expo-user-env":      "EXPO_USER_LOGIN",
+    "expo-passwd-env":    "EXPO_USER_PASSWD",
+    "desktop": {
+      "dependencies": {},
+      "win32-x64": {
+        "version": "1.0.0"
+      },
+      "linux-ia32": {
+        "version": "1.0.0"
+      }
+    },
     "define": {}
   }
 }

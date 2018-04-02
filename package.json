@@ -2,7 +2,13 @@
   "name": "rnsk",
   "homepage": "http://react-boilerplate.mcnam.ee/",
   "version": "0.1.0",
+  "description": "My app description",
   "private": true,
+  "author": {
+    "name": "Piotr Styczynski",
+    "email": "piotr@styczynski.in",
+    "url": "http://styczynski.in/"
+  },
   "devDependencies": {
     "autoprefixer": "^7.1.6",
     "autoprefixer-loader": "^3.2.0",
@@ -17,7 +23,7 @@
     "css-loader": "^0.28.7",
     "del": "^3.0.0",
     "electron": "^1.8.4",
-    "electron-forge": "^5.1.1",
+    "electron-packager": "^11.2.0",
     "electron-prebuilt-compile": "1.8.4",
     "eslint-loader": "^2.0.0",
     "exp": "^51.4.0",
@@ -65,7 +71,7 @@
     "web-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-dev",
     "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
     "desktop-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-dev",
-    "desktop-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-release"
+    "win32-x64-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-x64-release"
   },
   "jest": {
     "preset": "jest-expo",
@@ -79,28 +85,6 @@
     "testPathIgnorePatterns": [
       "/node_modules/"
     ]
-  },
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [],
-        "linux": []
-      },
-      "electronPackagerConfig": {},
-      "electronWinstallerConfig": {
-        "name": "installApp.exe"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {}
-    }
   },
   "dependencies": {
     "@expo/vector-icons": "^6.2.2",

@@ -13,6 +13,7 @@ const os          = require('os');
 const fs          = require('fs');
 const configure   = require('./configure.js');
 const buildConfig = JSON.parse(fs.readFileSync('../build.json', 'utf8'));
+const pckgConfig  = JSON.parse(fs.readFileSync('../package.json', 'utf8'));
 
 
 configure('dev');
@@ -31,6 +32,121 @@ const PATHS = {
     ]
 };
 
+
+function installDep(dependency, callback) {
+  runCommand('npm install '+dependency, callback);
+}
+
+function packageApp(platform, callback) {
+  console.log('[Desktop-release:'+platform+'] Package app for platform: '+platform);
+    
+  let packedFn = function(err, appPaths){};
+    
+  let packerPlatform = '';
+  let packerArch = '';
+    
+  if(platform == 'win32-x64') {
+    packerPlatform = 'win32';
+    packerArch = 'x64';
+    
+    packedFn = function(err, appPaths){
+      installDep('electron-winstaller', function(){
+        const electronInstaller = require('electron-winstaller');
+        resultPromise = electronInstaller.createWindowsInstaller({
+          appDirectory: '../build-cache/package-'+platform+'/'+appName+'-'+platform,
+          outputDirectory: '../release-'+platform,
+          authors: appAuthors,
+          exe: appName+'.exe'
+        });
+         
+        resultPromise.then(function(){
+          console.log('[Desktop-release:'+platform+'] Done.');
+          callback();
+        }, function(e){
+          console.log('[Desktop-release:'+platform+'] Failed: '+e.message);
+          callback(e);
+        });
+      });
+    };
+  } else if(platform == 'linux-ia32') {
+    packerPlatform = 'linux';
+    packerArch = 'ia32';
+    
+    packedFn = function(err, appPaths){
+      installDep('electron-linux-installer', function(){
+        const install = require('electron-linux-installer')
+        install({
+          src: '../build-cache/package-'+platform+'/'+appName+'-'+platform,
+          outputDirectory: '../release-'+platform,
+          arch: 'x86_64', 
+          for: 'both'
+        }).then(success => {
+          console.log('[Desktop-release:'+platform+'] Done.');
+          console.log(success);
+          callback();
+        }).catch(e => {
+          throw e;
+       });
+      });
+    };
+  } else {
+    throw "Unsupported platform: "+platform;
+  }
+    
+  let pckgAuthor = pckgConfig.author || {};
+  let pckgAuthorFull = (pckgAuthor.name || 'Anonymous author');
+  if(pckgAuthor.email) {
+    pckgAuthorFull += ' <' + pckgAuthor.email + '>';
+  }
+  if(pckgAuthor.url) {
+    pckgAuthorFull += ' (' + pckgAuthor.url + ')';
+  }
+    
+  let appName = pckgConfig.name || 'app';
+  let appDescription = pckgConfig.description || 'No description';
+  let appAuthors = pckgAuthorFull || 'Anonymous author';
+  let appVersion = '1.0.0';
+  let appDependencies = {};
+  
+  if(buildConfig.release) {
+    if(buildConfig.release.desktop) {
+      if(buildConfig.release.desktop[platform]) {
+        if(buildConfig.release.desktop[platform].version) {
+          appVersion = buildConfig.release.desktop[platform].version;
+        }
+      }
+      if(buildConfig.release.desktop.dependencies) {
+        appDependencies = buildConfig.release.desktop.dependencies;
+      }
+    }
+  }
+  
+  const packageJSONConf = {
+    "name": appName,
+    "description": appDescription,
+    "main": "./main.js",
+    "version": appVersion,
+    "dependencies": appDependencies
+  };
+    
+  const packager = require('electron-packager');
+  packager({
+    dir: '../build-desktop',
+    out: '../build-cache/package-'+platform,
+    name: appName,
+    platform: packerPlatform,
+    arch: packerArch
+  }, function(err, appPaths) {
+      var fs = require('fs');
+      const prevErr = err;
+      fs.writeFile('../build-cache/package-'+platform+'/'+appName+'-'+platform+'/resources/app/package.json', JSON.stringify(packageJSONConf), function(err) {
+        if(err) {
+          throw err;
+        }
+        packedFn(prevErr, appPaths);
+      });
+  });
+}
 
 function runCommand(command, callback, resetCursorLive, noOutput, filterFn) {
     
@@ -296,8 +412,12 @@ gulp.task('desktop-build-main:release', function(callback){
 });
 
 
-gulp.task('desktop-package', function(callback) {
-  runCommand("cd .. && node node_modules/electron-forge/dist/forge.js make", callback);
+gulp.task('desktop-package:win32-x64', function(callback) {
+  packageApp('win32-x64', callback);
+});
+
+gulp.task('desktop-package:linux-ia32', function(callback) {
+  packageApp('linux-ia32', callback);
 });
 
 gulp.task('web-watch', function() {
@@ -364,8 +484,12 @@ gulp.task('desktop-dev', function(){
   gulp.start('desktop-watch', 'desktop-server');
 });
 
-gulp.task('desktop-release', function(){
-  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package');
+gulp.task('win32-x64-release', function(){
+  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:win32-x64');
+});
+
+gulp.task('linux-ia32-release', function(){
+  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:linux-ia32');
 });
 
 gulp.task('web-release', function(){
