@@ -76,15 +76,15 @@ function packageApp(platform, callback) {
       installDep('electron-linux-installer', function(){
         const install = require('electron-linux-installer');
         install({
-          'src': '../build-cache/package-'+platform+'/'+appName+'-'+platform,
-          'outputDirectory': '../release-'+platform,
-          'arch': 'x86_64', 
+          'src': ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
+          'dest': ('../release-'+platform),
+          'arch': 'x86_64',
           'for': 'both'
-        }).then(success => {
+        }).then(function(success) {
           console.log('[Desktop-release:'+platform+'] Done.');
           console.log(success);
           callback();
-        }).catch(e => {
+        }).catch(function(e) {
           throw e;
        });
       });
