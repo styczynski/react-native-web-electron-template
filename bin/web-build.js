@@ -21,6 +21,7 @@ configure('dev');
 const PATHS = {
     srcWebBuild: './src/web/index.js',
     outWebBuild: './build-web',
+    outWebRelease: './release-web',
     srcDesktopBuild: './src/desktop/index.js',
     outDesktopBuild: './build-desktop',
     srcDesktopMainBuild: './src/desktop/electron-entry.js',
@@ -61,6 +62,12 @@ function packageApp(platform, callback) {
          
         resultPromise.then(function(){
           console.log('[Desktop-release:'+platform+'] Done.');
+          
+          console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
+          fs.readdirSync('../release-'+platform).forEach(function(file) {
+            console.log(' - '+file);
+          });
+          
           callback();
         }, function(e){
           console.log('[Desktop-release:'+platform+'] Failed: '+e.message);
@@ -75,18 +82,37 @@ function packageApp(platform, callback) {
     packedFn = function(err, appPaths){
       installDep('electron-linux-installer', function(){
         const install = require('electron-linux-installer');
+        console.log('[Desktop-release:'+platform+'] Generate debian package...');
         install({
           src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
           dest: ('../release-'+platform),
           arch: 'x86_64',
           for: 'debian'
         }).then(function(success) {
-          console.log('[Desktop-release:'+platform+'] Done.');
           console.log(success);
-          callback();
+          console.log('[Desktop-release:'+platform+'] Generate redhat package...');
+          install({
+            src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
+            dest: ('../release-'+platform),
+            arch: 'x86_64',
+            for: 'redhat'
+          }).then(function(success) {
+            console.log('[Desktop-release:'+platform+'] Done.');
+            console.log(success);
+            
+            console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
+            fs.readdirSync('../release-'+platform).forEach(function(file) {
+              console.log(' - '+file);
+            });
+            
+            callback();
+          }).catch(function(e) {
+            throw e;
+          });
+
         }).catch(function(e) {
           throw e;
-       });
+        });
       });
     };
   } else {
@@ -368,7 +394,14 @@ gulp.task('web-build:release', function(callback){
     .pipe(cache('webpack', {optimizeMemory: true}))
     .pipe(plumber())
     .pipe(gulpWebpack( require('./web.prod.config.js') ))
-    .pipe(gulp.dest(PATHS.outWebBuild, {cwd: '..'}));
+    .pipe(gulp.dest(PATHS.outWebRelease, {cwd: '..'}));
+});
+
+gulp.task('web-build:release-finalize', function(callback) {
+  console.log('[RELEASE] Generated release folder '+PATHS.outWebRelease+' sources:');
+  fs.readdirSync(path.join('..', PATHS.outWebRelease)).forEach(function(file) {
+    console.log(' - '+file);
+  });
 });
 
 gulp.task('web-build:dev', function(callback){
@@ -494,7 +527,7 @@ gulp.task('linux-ia32-release', function(){
 
 gulp.task('web-release', function(){
   configure('release');
-  gulp.start('web-build:release');
+  runSeq('web-build:release', 'web-build:release-finalize');
 });
 
 gulp.task('mobile-dev', function(){
