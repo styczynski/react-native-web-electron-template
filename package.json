@@ -71,7 +71,8 @@
     "web-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-dev",
     "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
     "desktop-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-dev",
-    "win32-x64-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-x64-release"
+    "windows-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-ia32-release",
+    "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release"
   },
   "jest": {
     "preset": "jest-expo",

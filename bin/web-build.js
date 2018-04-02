@@ -45,9 +45,9 @@ function packageApp(platform, callback) {
   let packerPlatform = '';
   let packerArch = '';
     
-  if(platform == 'win32-x64') {
+  if(platform == 'win32-ia32') {
     packerPlatform = 'win32';
-    packerArch = 'x64';
+    packerArch = 'ia32';
     
     packedFn = function(err, appPaths){
       installDep('electron-winstaller', function(){
@@ -412,8 +412,8 @@ gulp.task('desktop-build-main:release', function(callback){
 });
 
 
-gulp.task('desktop-package:win32-x64', function(callback) {
-  packageApp('win32-x64', callback);
+gulp.task('desktop-package:win32-ia32', function(callback) {
+  packageApp('win32-ia32', callback);
 });
 
 gulp.task('desktop-package:linux-ia32', function(callback) {
@@ -484,8 +484,8 @@ gulp.task('desktop-dev', function(){
   gulp.start('desktop-watch', 'desktop-server');
 });
 
-gulp.task('win32-x64-release', function(){
-  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:win32-x64');
+gulp.task('win32-ia32-release', function(){
+  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:win32-ia32');
 });
 
 gulp.task('linux-ia32-release', function(){
