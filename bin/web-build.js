@@ -34,7 +34,7 @@ const PATHS = {
 
 
 function installDep(dependency, callback) {
-  runCommand('npm install '+dependency, callback);
+  runCommand('cd .. && npm install '+dependency, callback);
 }
 
 function packageApp(platform, callback) {
@@ -74,12 +74,12 @@ function packageApp(platform, callback) {
     
     packedFn = function(err, appPaths){
       installDep('electron-linux-installer', function(){
-        const install = require('electron-linux-installer')
+        const install = require('electron-linux-installer');
         install({
-          src: '../build-cache/package-'+platform+'/'+appName+'-'+platform,
-          outputDirectory: '../release-'+platform,
-          arch: 'x86_64', 
-          for: 'both'
+          'src': '../build-cache/package-'+platform+'/'+appName+'-'+platform,
+          'outputDirectory': '../release-'+platform,
+          'arch': 'x86_64', 
+          'for': 'both'
         }).then(success => {
           console.log('[Desktop-release:'+platform+'] Done.');
           console.log(success);
@@ -195,7 +195,7 @@ function runCommand(command, callback, resetCursorLive, noOutput, filterFn) {
           throw "Command returned a non-zero exit code! (could not execute the command)";
         }
       }
-      callback(null);
+      callback();
     });
     
 };
