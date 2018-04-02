@@ -1,0 +1,11 @@
+{
+  "presets": ["flow", "babel-preset-expo"],
+  "env": {
+    "development": {
+      "plugins": ["transform-react-jsx-source"]
+    },
+    "test": {
+      "plugins": ["transform-react-jsx-source"]
+    }
+  }
+}

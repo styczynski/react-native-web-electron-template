@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "expo-server-ip":   "192.168.2.2",
+    "web-server-port":  "3000",
+    "web-server-cache": "enabled",
+    "web-server-lint":  "disabled",
+    "define": {}
+  },
+  "release": {
+    "lint":             "enabled",
+    "expo-user-env":    "EXPO_USER_LOGIN",
+    "expo-passwd-env":  "EXPO_USER_PASSWD",
+    "define": {}
+  }
+}

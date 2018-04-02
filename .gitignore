@@ -1,0 +1,10 @@
+node_modules/
+.vscode/
+.expo/
+npm-debug.*
+build-web/
+build-desktop/
+build-cache/
+.expo/
+bin/.expo/
+

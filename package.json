@@ -1,0 +1,134 @@
+{
+  "name": "rnsk",
+  "homepage": "http://react-boilerplate.mcnam.ee/",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "autoprefixer": "^7.1.6",
+    "autoprefixer-loader": "^3.2.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-react-transform": "^3.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "css-loader": "^0.28.7",
+    "del": "^3.0.0",
+    "electron": "^1.8.4",
+    "electron-forge": "^5.1.1",
+    "electron-prebuilt-compile": "1.8.4",
+    "eslint-loader": "^2.0.0",
+    "exp": "^51.4.0",
+    "express": "^4.16.3",
+    "favicons-webpack-plugin": "0.0.8",
+    "flow-bin": "^0.69.0",
+    "flow-check-webpack-plugin": "^0.1.3",
+    "flow-status-webpack-plugin": "^0.1.7",
+    "gulp": "^3.9.1",
+    "gulp-cached": "^1.1.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-plumber": "^1.2.0",
+    "hard-source-webpack-plugin": "^0.6.4",
+    "html-webpack-plugin": "^3.1.0",
+    "jest-expo": "^22.0.0",
+    "json-loader": "^0.5.7",
+    "node-sass": "^4.7.2",
+    "progress-bar-webpack-plugin": "^1.11.0",
+    "react-native-scripts": "1.7.0",
+    "react-test-renderer": "16.0.0-beta.5",
+    "react-transform-catch-errors": "^1.0.2",
+    "react-transform-hmr": "^1.0.4",
+    "redbox-react": "^1.5.0",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "run-sequence": "^2.2.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.11.0",
+    "webpack-dev-server": "^2.9.4",
+    "webpack-hot-middleware": "^2.20.0",
+    "webpack-stream": "^4.0.3"
+  },
+  "main": "./src/native/crna-entry.js",
+  "scripts": {
+    "clear-cache": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js clear-cache",
+    "test": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js test",
+    "test-flow": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js test-flow",
+    "test-jest": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js test-jest",
+    "mobile-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js mobile-dev",
+    "android-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js android-dev",
+    "ios-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js ios-dev",
+    "android-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js android-release",
+    "ios-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js ios-release",
+    "web-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-dev",
+    "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
+    "desktop-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-dev",
+    "desktop-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-release"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "globals": {
+      "NODE_ENV": "test"
+    },
+    "verbose": true,
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-navigation)/"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [],
+        "linux": []
+      },
+      "electronPackagerConfig": {},
+      "electronWinstallerConfig": {
+        "name": "installApp.exe"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {}
+    }
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^6.2.2",
+    "babel": "^6.23.0",
+    "babel-eslint": "^8.0.2",
+    "babel-polyfill": "^6.26.0",
+    "bootstrap": "^4.0.0-beta.2",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.5.1",
+    "expo": "^22.0.2",
+    "firebase": "^4.8.0",
+    "morgan": "^1.9.0",
+    "native-base": "^2.3.5",
+    "object-assign": "^4.1.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0-beta.5",
+    "react-dom": "^16.2.0",
+    "react-native": "^0.49.5",
+    "react-native-router-flux": "^4.0.0-beta.24",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "reactstrap": "^5.0.0-alpha.4",
+    "redux": "^3.7.2",
+    "redux-persist": "^5.4.0",
+    "redux-thunk": "^2.2.0",
+    "superagent": "^3.8.1"
+  }
+}
