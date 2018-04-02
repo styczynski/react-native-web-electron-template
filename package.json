@@ -66,11 +66,11 @@
     "mobile-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js mobile-dev",
     "android-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js android-dev",
     "ios-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js ios-dev",
+    "web-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-dev",
+    "desktop-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-dev",
     "android-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js android-release",
     "ios-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js ios-release",
-    "web-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-dev",
     "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
-    "desktop-dev": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js desktop-dev",
     "windows-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-ia32-release",
     "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release"
   },
