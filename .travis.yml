@@ -16,4 +16,6 @@ install:
   - npm install
 script:
   - npm run release
+  - git clean -f
+  - git remote set-url origin "$GIT_SELF_REPO_URL"
   - node node_modules/release-it/bin/release-it.js -n --verbose --debug --no-npm.publish
