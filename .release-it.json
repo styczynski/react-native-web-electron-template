@@ -7,6 +7,6 @@
     "assets": "./release/*.*"
   },
   "dist": {
-    "repo": "git@github.com/styczynski/react-native-web-electron-template.git#release"
+    "repo": "git@github.com:styczynski/react-native-web-electron-template.git#release"
   }
 }
