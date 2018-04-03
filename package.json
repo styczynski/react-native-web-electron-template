@@ -1,7 +1,7 @@
 {
   "name": "rnsk",
   "homepage": "http://react-boilerplate.mcnam.ee/",
-  "version": "0.1.4",
+  "version": "0.0.1",
   "description": "My app description",
   "private": true,
   "author": {
@@ -50,7 +50,6 @@
     "redbox-react": "^1.5.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "release-it": "^7.3.0",
     "run-sequence": "^2.2.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
@@ -75,7 +74,8 @@
     "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
     "windows-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-ia32-release",
     "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release",
-    "release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js release"
+    "release-collect": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js release-collect",
+    "release": "npm run web-release && npm run ios-release && npm run android-release && npm run linux-release && npm run release-collect"
   },
   "jest": {
     "preset": "jest-expo",

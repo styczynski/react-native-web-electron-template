@@ -9,4 +9,6 @@ build-cache/
 bin/.expo/
 release-win32-ia32/
 release-linux-ia32/
+release-android/
+release-ios/
 release/

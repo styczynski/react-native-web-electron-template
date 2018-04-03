@@ -1,8 +1,30 @@
 # React template for apps targetting Mobiles/Web/Desktop
 
-To install everything just do:
+To install node dependencies just do:
 ```
   npm install .
+```
+
+And install *fakeroot* needed by release modules:
+```
+  sudo apt-get install fakeroot
+```
+
+## Full release
+
+To perform release of binaries for the all supported platforms do:
+```
+  npm run release
+```
+
+Then the `release` driectory will be created with the following contents:
+```
+  release
+    | - web
+    | - linux
+    | - windows
+    | - android
+    \-  ios
 ```
 
 ## For web
@@ -23,7 +45,7 @@ To prepare release files run:
   npm run web-release
 ```
 
-The output files will be placed in the directory `./build-web`.
+The output files will be placed in the directory `./release-web`.
 
 The output will be `index.html` available for static hosting by any server.
 
@@ -41,6 +63,8 @@ To start **Electron** with autoreload on application close please run:
 You can release desktop apps for the following platforms:
 * Linux 32bit (run `npm run linux-release`)
 * Windows 32bit (run `npm run windows-release`)
+
+The release files will be available in `release-linux-ia3` and `release-win32-ia32` folders.
 
 **Note:** You can build Linux releases only on Linux and similary for other platforms.
 
@@ -66,14 +90,14 @@ That's the user and password for Expo account that the app will be published und
 
 Then run the command:
 ```
-  android-release
+  npm android-release
 ```
 
 Or/and:
 ```
-  ios-release
+  npm run ios-release
 ```
 
 The release will be performed in-cloud (Expo servers).
-And the link for app download will be specified in the logs (not full automation support).
+The binaries will be saved to `android/ios-release` folders.
 

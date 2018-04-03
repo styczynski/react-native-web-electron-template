@@ -355,14 +355,14 @@ function downloadExpoAppRelease(url, releaseFolder, callback) {
 gulp.task('android-release', function(callback) {
   configure('release');
   runExpoCommandCaptureAppLink("cd .. && node node_modules/exp/bin/exp.js build:android --non-interactive", function(appLink){
-    downloadExpoAppRelease(appLink, 'android-release', callback);
+    downloadExpoAppRelease(appLink, 'release-android', callback);
   });
 });
 
 gulp.task('ios-release', function(callback) {
   configure('release');
   runExpoCommandCaptureAppLink("cd .. && node node_modules/exp/bin/exp.js build:ios --non-interactive", function(appLink){
-    downloadExpoAppRelease(appLink, 'ios-release', callback);
+    downloadExpoAppRelease(appLink, 'release-ios', callback);
   });
 });
 
@@ -441,7 +441,7 @@ gulp.task('release-deploy', function(callback){
   console.log('[RELEASE] Finding and packing releases for platforms into final release package...');
   const copyWin32 = function(cb) {
     if (fs.existsSync('../release-win32-ia32')) {
-      runCommand("cd .. && cp -R ./release-win32-ia32/. release/", function(){
+      runCommand("cd .. && cp -R ./release-win32-ia32/. release/windows/", function(){
         console.log('[RELEASE] FOUND WIN32-IA32 RELEASE (COPIED)');
         cb();
       });
@@ -453,7 +453,7 @@ gulp.task('release-deploy', function(callback){
   
   const copyLinux32 = function(cb) {
     if (fs.existsSync('../release-linux-ia32')) {
-      runCommand("cd .. && cp -R ./release-linux-ia32/. release/", function(){
+      runCommand("cd .. && cp -R ./release-linux-ia32/. release/linux/", function(){
         console.log('[RELEASE] FOUND LINUX-IA32 RELEASE (COPIED)');
         cb();
       });
@@ -463,10 +463,52 @@ gulp.task('release-deploy', function(callback){
     }
   };
   
+  const copyAndroid = function(cb) {
+    if (fs.existsSync('../release-android')) {
+      runCommand("cd .. && cp -R ./release-android/. release/android/", function(){
+        console.log('[RELEASE] FOUND ANDROID RELEASE (COPIED)');
+        cb();
+      });
+    } else {
+      console.log('[RELEASE] NO ANDROID RELEASE (SKIP)');
+      cb();
+    }
+  };
+  
+  const copyIos = function(cb) {
+    if (fs.existsSync('../release-ios')) {
+      runCommand("cd .. && cp -R ./release-ios/. release/ios/", function(){
+        console.log('[RELEASE] FOUND IOS RELEASE (COPIED)');
+        cb();
+      });
+    } else {
+      console.log('[RELEASE] NO IOS RELEASE (SKIP)');
+      cb();
+    }
+  };
+  
+  const copyWeb = function(cb) {
+    if (fs.existsSync('../release-web')) {
+      runCommand("cd .. && cp -R ./release-web/. release/web/", function(){
+        console.log('[RELEASE] FOUND WEB RELEASE (COPIED)');
+        cb();
+      });
+    } else {
+      console.log('[RELEASE] NO WEB RELEASE (SKIP)');
+      cb();
+    }
+  };
+  
   copyWin32(function(){
     copyLinux32(function(){
-      console.log('[RELEASE] Copying done. Proceed to deploy.');
-      callback();
+      copyAndroid(function(){
+        copyIos(function(){
+          copyWeb(function(){
+            console.log('[RELEASE] Copying done. Proceed to deploy.');
+            callback();
+          });
+        });
+      });
     });
   });
 });
@@ -591,8 +633,8 @@ gulp.task('linux-ia32-release', function(){
   runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:linux-ia32');
 });
 
-gulp.task('release', function(){
-  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:linux-ia32', 'release-deploy');
+gulp.task('release-collect', function(){
+  runSeq('release-deploy');
 });
 
 gulp.task('web-release', function(){
