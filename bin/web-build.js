@@ -117,7 +117,14 @@ function packageApp(platform, callback) {
             fs.readdirSync('..').forEach(function(file) {
               console.log(' - '+file);
             });
-            
+            console.log("[RELEASE-DEBUG] Folder ../build-cache:");
+            fs.readdirSync('../build-cache').forEach(function(file) {
+              console.log(' - '+file);
+            });
+            console.log("[RELEASE-DEBUG] Folder "+'../build-cache/package-'+platform+':');
+            fs.readdirSync('../build-cache/package-'+platform).forEach(function(file) {
+              console.log(' - '+file);
+            });
             
             callback();
           }).catch(function(e) {
