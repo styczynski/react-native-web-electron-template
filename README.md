@@ -10,6 +10,18 @@ And install *fakeroot* needed by release modules:
   sudo apt-get install fakeroot
 ```
 
+To release **Expo** (android/ios) you must set up environment variables (their names are defined in `release.expo-user-env` and `release.expo-passwd-env` - build.json)
+By default it is `EXPO_USER_LOGIN` and `EXPO_USER_PASSWD`
+
+You can create new Expo account then put the credentials there.
+
+**Note:** Not all abuilds are now fully supported (becaouse of early stage of project)
+Current list of fully supported builds:**
+
+* web
+* linux
+* android
+
 ## Full release
 
 To perform release of binaries for the all supported platforms do:

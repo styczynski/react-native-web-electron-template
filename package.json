@@ -75,7 +75,7 @@
     "windows-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-ia32-release",
     "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release",
     "release-collect": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js release-collect",
-    "release": "npm run web-release && npm run ios-release && npm run android-release && npm run linux-release && npm run release-collect"
+    "release": "npm run web-release && npm run android-release && npm run linux-release && npm run release-collect"
   },
   "jest": {
     "preset": "jest-expo",
