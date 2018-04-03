@@ -1,0 +1,12 @@
+{
+  "src": {
+    "tagName": "v%s"
+  },
+  "github": {
+    "release": true,
+    "assets": "./release/*.*"
+  },
+  "dist": {
+    "repo": "git@github.com/styczynski/react-native-web-electron-template.git#release"
+  }
+}

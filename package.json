@@ -50,6 +50,7 @@
     "redbox-react": "^1.5.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
+    "release-it": "^7.3.0",
     "run-sequence": "^2.2.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.0",
@@ -73,7 +74,8 @@
     "ios-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js ios-release",
     "web-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js web-release",
     "windows-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js win32-ia32-release",
-    "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release"
+    "linux-release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js linux-ia32-release",
+    "release": "node ./node_modules/gulp/bin/gulp.js --gulpfile ./bin/web-build.js release"
   },
   "jest": {
     "preset": "jest-expo",

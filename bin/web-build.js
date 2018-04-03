@@ -91,32 +91,14 @@ function packageApp(platform, callback) {
           dest: ('../release-'+platform),
           arch: 'i386'
         }).then(function() {
-        console.log('[Desktop-release:'+platform+'] Done.');
+          console.log('[Desktop-release:'+platform+'] Done.');
         
-        console.log("[RELEASE-DEBUG] Folder .:");
-        fs.readdirSync('.').forEach(function(file) {
-          console.log(' - '+file);
-        });
-        console.log("[RELEASE-DEBUG] Folder ..:");
-        fs.readdirSync('..').forEach(function(file) {
-          console.log(' - '+file);
-        });
-        console.log("[RELEASE-DEBUG] Folder ../build-cache:");
-        fs.readdirSync('../build-cache').forEach(function(file) {
-          console.log(' - '+file);
-        });
-        console.log("[RELEASE-DEBUG] Folder "+'../build-cache/package-'+platform+':');
-        fs.readdirSync('../build-cache/package-'+platform).forEach(function(file) {
-          console.log(' - '+file);
-        });
+          console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
+          fs.readdirSync('../release-'+platform).forEach(function(file) {
+            console.log(' - '+file);
+          });
         
-        
-        console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
-        fs.readdirSync('../release-'+platform).forEach(function(file) {
-          console.log(' - '+file);
-        });
-        
-        callback();
+          callback();
 
         }).catch(function(e) {
           throw e;
@@ -455,6 +437,40 @@ gulp.task('web-build:release-finalize', function(callback) {
   });
 });
 
+gulp.task('release-deploy', function(callback){
+  console.log('[RELEASE] Finding and packing releases for platforms into final release package...');
+  const copyWin32 = function(cb) {
+    if (fs.existsSync('../release-win32-ia32')) {
+      runCommand("cd .. && cp -R ./release-win32-ia32/. release/", function(){
+        console.log('[RELEASE] FOUND WIN32-IA32 RELEASE (COPIED)');
+        cb();
+      });
+    } else {
+      console.log('[RELEASE] NO WIN32-IA32 RELEASE (SKIP)');
+      cb();
+    }
+  };
+  
+  const copyLinux32 = function(cb) {
+    if (fs.existsSync('../release-linux-ia32')) {
+      runCommand("cd .. && cp -R ./release-linux-ia32/. release/", function(){
+        console.log('[RELEASE] FOUND LINUX-IA32 RELEASE (COPIED)');
+        cb();
+      });
+    } else {
+      console.log('[RELEASE] NO LINUX-IA32 RELEASE (SKIP)');
+      cb();
+    }
+  };
+  
+  copyWin32(function(){
+    copyLinux32(function(){
+      console.log('[RELEASE] Copying done. Proceed to deploy.');
+      callback();
+    });
+  });
+});
+
 gulp.task('web-build:dev', function(callback){
   return gulp.src(PATHS.srcWebBuild, {cwd: '..'})
     .pipe(cache('webpack', {optimizeMemory: true}))
@@ -494,7 +510,6 @@ gulp.task('desktop-build-main:release', function(callback){
     .pipe(gulpWebpack( require('./desktop-main.release.config.js') ))
     .pipe(gulp.dest(PATHS.outDesktopMainBuild, {cwd: '..'}));
 });
-
 
 gulp.task('desktop-package:win32-ia32', function(callback) {
   packageApp('win32-ia32', callback);
@@ -576,6 +591,10 @@ gulp.task('linux-ia32-release', function(){
   runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:linux-ia32');
 });
 
+gulp.task('release', function(){
+  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:win32-ia32', 'release-deploy');
+});
+
 gulp.task('web-release', function(){
   configure('release');
   runSeq('web-build:release', 'web-build:release-finalize');
@@ -604,3 +623,4 @@ gulp.task('test-flow', function(){
 gulp.task('test', function(){
   runSeq('test-flow', 'test-jest');
 });
+
