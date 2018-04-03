@@ -82,10 +82,8 @@ function packageApp(platform, callback) {
     packerArch = 'ia32';
     
     packedFn = function(err, appPaths){
-      installDep('electron-installer-linux', function(){
-        const install = require('electron-installer-linux');
-        const installDebian = install.debian;
-        
+      installDep('electron-installer-debian', function(){
+        const installDebian = require('electron-installer-debian');
         console.log('[Desktop-release:'+platform+'] Generate debian package...');
         
         installDebian({
