@@ -5,6 +5,7 @@ const plumber     = require('gulp-plumber');
 const cache       = require('gulp-cached');
 const webpack     = require('webpack');
 const gulpWebpack = require('webpack-stream');
+const download    = require('download-file');
 const path        = require('path');
 const nodemon     = require('gulp-nodemon');
 const exec        = require('child_process').exec;
@@ -14,6 +15,7 @@ const fs          = require('fs');
 const configure   = require('./configure.js');
 const buildConfig = JSON.parse(fs.readFileSync('../build.json', 'utf8'));
 const pckgConfig  = JSON.parse(fs.readFileSync('../package.json', 'utf8'));
+
 
 
 configure('dev');
@@ -101,9 +103,21 @@ function packageApp(platform, callback) {
             console.log(success);
             
             console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
+            /*
             fs.readdirSync('../release-'+platform).forEach(function(file) {
               console.log(' - '+file);
             });
+            */
+            
+            console.log("[RELEASE-DEBUG] Folder .:");
+            fs.readdirSync('.').forEach(function(file) {
+              console.log(' - '+file);
+            });
+            console.log("[RELEASE-DEBUG] Folder ..:");
+            fs.readdirSync('..').forEach(function(file) {
+              console.log(' - '+file);
+            });
+            
             
             callback();
           }).catch(function(e) {
@@ -323,14 +337,57 @@ function runExpoCommandWithLogin(expoCommand, callback) {
   });
 };
 
+
+function runExpoCommandCaptureAppLink(command, callback) {
+  let releaseAppLink = '';
+  const captureURL = function(input) {
+    const inputStr = input.toString();
+    if(inputStr.indexOf('Successfully built standalone app:') != -1) {
+      let appLink = inputStr.split('Successfully built standalone app:')[1];
+      appLink = appLink || '';
+      appLink = (appLink.replace(/\r\n/g, "\r").replace(/\n/g, "\r").split(/\r/))[0];
+      releaseAppLink = appLink.trim();
+    }
+    return input;
+  };
+  
+  runExpoCommandWithLogin(command, function(){
+    callback(releaseAppLink);
+  }, false, false, captureURL);
+}
+
+function downloadExpoAppRelease(url, releaseFolder, callback) {
+  console.log('[Release] Downloading release files from \"'+url+'\"...');
+     
+  const options = {
+    directory: "../"+releaseFolder
+  }
+     
+  download(url, options, function(err){
+    if (err) {
+      throw err;
+    }
+    console.log('[RELEASE] Generated release folder '+releaseFolder+' sources:');
+    fs.readdirSync(path.join('..', releaseFolder)).forEach(function(file) {
+      console.log(' - '+file);
+    });
+    
+    callback();
+  });
+}
+
 gulp.task('android-release', function(callback) {
   configure('release');
-  runExpoCommandWithLogin("cd .. && node node_modules/exp/bin/exp.js build:android --non-interactive", callback);
+  runExpoCommandCaptureAppLink("cd .. && node node_modules/exp/bin/exp.js build:android --non-interactive", function(appLink){
+    downloadExpoAppRelease(appLink, 'android-release', callback);
+  });
 });
 
 gulp.task('ios-release', function(callback) {
   configure('release');
-  runExpoCommandWithLogin("cd .. && node node_modules/exp/bin/exp.js build:ios --non-interactive", callback);
+  runExpoCommandCaptureAppLink("cd .. && node node_modules/exp/bin/exp.js build:ios --non-interactive", function(appLink){
+    downloadExpoAppRelease(appLink, 'ios-release', callback);
+  });
 });
 
 gulp.task('expo-start', function(callback) {

@@ -8,5 +8,3 @@ install:
   - npm install
 script:
   - npm run linux-release
-  - npm run web-release
-  - npm run android-release
