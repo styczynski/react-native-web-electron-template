@@ -5,6 +5,7 @@ cache:
   directories:
     - node_modules
 install:
+  - apt-get install fakeroot
   - npm install
 script:
   - npm run linux-release
