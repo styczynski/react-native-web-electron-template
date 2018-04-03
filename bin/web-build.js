@@ -82,54 +82,43 @@ function packageApp(platform, callback) {
     packerArch = 'ia32';
     
     packedFn = function(err, appPaths){
-      installDep('electron-linux-installer', function(){
-        const install = require('electron-linux-installer');
+      installDep('electron-installer-linux', function(){
+        const install = require('electron-installer-linux');
+        const installDebian = install.debian;
+        
         console.log('[Desktop-release:'+platform+'] Generate debian package...');
-        install({
+        
+        installDebian({
           src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
           dest: ('../release-'+platform),
-          arch: 'x86',
-          for: 'debian'
-        }).then(function(success) {
-          console.log(success);
-          console.log('[Desktop-release:'+platform+'] Generate redhat package...');
-          install({
-            src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
-            dest: ('../release-'+platform),
-            arch: 'x86',
-            for: 'redhat'
-          }).then(function(success) {
-            console.log('[Desktop-release:'+platform+'] Done.');
-            console.log(success);
-            
-            console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
-            /*
-            fs.readdirSync('../release-'+platform).forEach(function(file) {
-              console.log(' - '+file);
-            });
-            */
-            
-            console.log("[RELEASE-DEBUG] Folder .:");
-            fs.readdirSync('.').forEach(function(file) {
-              console.log(' - '+file);
-            });
-            console.log("[RELEASE-DEBUG] Folder ..:");
-            fs.readdirSync('..').forEach(function(file) {
-              console.log(' - '+file);
-            });
-            console.log("[RELEASE-DEBUG] Folder ../build-cache:");
-            fs.readdirSync('../build-cache').forEach(function(file) {
-              console.log(' - '+file);
-            });
-            console.log("[RELEASE-DEBUG] Folder "+'../build-cache/package-'+platform+':');
-            fs.readdirSync('../build-cache/package-'+platform).forEach(function(file) {
-              console.log(' - '+file);
-            });
-            
-            callback();
-          }).catch(function(e) {
-            throw e;
-          });
+          arch: 'i386'
+        }).then(function() {
+        console.log('[Desktop-release:'+platform+'] Done.');
+        
+        console.log("[RELEASE-DEBUG] Folder .:");
+        fs.readdirSync('.').forEach(function(file) {
+          console.log(' - '+file);
+        });
+        console.log("[RELEASE-DEBUG] Folder ..:");
+        fs.readdirSync('..').forEach(function(file) {
+          console.log(' - '+file);
+        });
+        console.log("[RELEASE-DEBUG] Folder ../build-cache:");
+        fs.readdirSync('../build-cache').forEach(function(file) {
+          console.log(' - '+file);
+        });
+        console.log("[RELEASE-DEBUG] Folder "+'../build-cache/package-'+platform+':');
+        fs.readdirSync('../build-cache/package-'+platform).forEach(function(file) {
+          console.log(' - '+file);
+        });
+        
+        
+        console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
+        fs.readdirSync('../release-'+platform).forEach(function(file) {
+          console.log(' - '+file);
+        });
+        
+        callback();
 
         }).catch(function(e) {
           throw e;
