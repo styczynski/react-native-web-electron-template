@@ -88,7 +88,7 @@ function packageApp(platform, callback) {
         install({
           src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
           dest: ('../release-'+platform),
-          arch: 'x86_64',
+          arch: 'x86',
           for: 'debian'
         }).then(function(success) {
           console.log(success);
@@ -96,7 +96,7 @@ function packageApp(platform, callback) {
           install({
             src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
             dest: ('../release-'+platform),
-            arch: 'x86_64',
+            arch: 'x86',
             for: 'redhat'
           }).then(function(success) {
             console.log('[Desktop-release:'+platform+'] Done.');
