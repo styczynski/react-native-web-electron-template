@@ -1,11 +1,18 @@
 language: node_js
 node_js:
   - "node"
+branches:
+  only:
+  - master
 cache:
   directories:
     - node_modules
+    - release-linux-ia32
+    - release
+    - build-cache
+    - build-desktop
 install:
   - sudo apt-get install fakeroot
   - npm install
 script:
-  - npm run linux-release
+  - npm run release

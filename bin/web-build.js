@@ -592,7 +592,7 @@ gulp.task('linux-ia32-release', function(){
 });
 
 gulp.task('release', function(){
-  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:win32-ia32', 'release-deploy');
+  runSeq('desktop-build-renderer:dev', 'desktop-build-main:dev', 'desktop-package:linux-ia32', 'release-deploy');
 });
 
 gulp.task('web-release', function(){
