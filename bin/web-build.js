@@ -42,16 +42,16 @@ function installDep(dependency, callback) {
 
 function packageApp(platform, callback) {
   console.log('[Desktop-release:'+platform+'] Package app for platform: '+platform);
-    
+
   let packedFn = function(err, appPaths){};
-    
+
   let packerPlatform = '';
   let packerArch = '';
-    
+
   if(platform == 'win32-ia32') {
     packerPlatform = 'win32';
     packerArch = 'ia32';
-    
+
     packedFn = function(err, appPaths){
       installDep('electron-winstaller', function(){
         const electronInstaller = require('electron-winstaller');
@@ -61,15 +61,15 @@ function packageApp(platform, callback) {
           authors: appAuthors,
           exe: appName+'.exe'
         });
-         
+
         resultPromise.then(function(){
           console.log('[Desktop-release:'+platform+'] Done.');
-          
+
           console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
           fs.readdirSync('../release-'+platform).forEach(function(file) {
             console.log(' - '+file);
           });
-          
+
           callback();
         }, function(e){
           console.log('[Desktop-release:'+platform+'] Failed: '+e.message);
@@ -80,24 +80,24 @@ function packageApp(platform, callback) {
   } else if(platform == 'linux-ia32') {
     packerPlatform = 'linux';
     packerArch = 'ia32';
-    
+
     packedFn = function(err, appPaths){
       installDep('electron-installer-debian', function(){
         const installDebian = require('electron-installer-debian');
         console.log('[Desktop-release:'+platform+'] Generate debian package...');
-        
+
         installDebian({
           src: ('../build-cache/package-'+platform+'/'+appName+'-'+platform),
           dest: ('../release-'+platform),
           arch: 'i386'
         }).then(function() {
           console.log('[Desktop-release:'+platform+'] Done.');
-        
+
           console.log('[RELEASE] Generated release folder ./release-'+platform+' sources:');
           fs.readdirSync('../release-'+platform).forEach(function(file) {
             console.log(' - '+file);
           });
-        
+
           callback();
 
         }).catch(function(e) {
@@ -108,7 +108,7 @@ function packageApp(platform, callback) {
   } else {
     throw "Unsupported platform: "+platform;
   }
-    
+
   let pckgAuthor = pckgConfig.author || {};
   let pckgAuthorFull = (pckgAuthor.name || 'Anonymous author');
   if(pckgAuthor.email) {
@@ -117,13 +117,13 @@ function packageApp(platform, callback) {
   if(pckgAuthor.url) {
     pckgAuthorFull += ' (' + pckgAuthor.url + ')';
   }
-    
+
   let appName = pckgConfig.name || 'app';
   let appDescription = pckgConfig.description || 'No description';
   let appAuthors = pckgAuthorFull || 'Anonymous author';
   let appVersion = '1.0.0';
   let appDependencies = {};
-  
+
   if(buildConfig.release) {
     if(buildConfig.release.desktop) {
       if(buildConfig.release.desktop[platform]) {
@@ -136,7 +136,7 @@ function packageApp(platform, callback) {
       }
     }
   }
-  
+
   const packageJSONConf = {
     "name": appName,
     "description": appDescription,
@@ -144,7 +144,7 @@ function packageApp(platform, callback) {
     "version": appVersion,
     "dependencies": appDependencies
   };
-    
+
   const packager = require('electron-packager');
   packager({
     dir: '../build-desktop',
@@ -165,9 +165,9 @@ function packageApp(platform, callback) {
 }
 
 function runCommand(command, callback, resetCursorLive, noOutput, filterFn) {
-    
+
     console.log("[Command] Execute "+command);
-    
+
     var command = spawn(command, {
       shell: true
     });
@@ -195,7 +195,7 @@ function runCommand(command, callback, resetCursorLive, noOutput, filterFn) {
         process.stdout.write(data);
       }
     });
-    
+
     command.on('error', (err) => {
       if(!noOutput) {
         console.log('Error during execution of command!');
@@ -213,84 +213,60 @@ function runCommand(command, callback, resetCursorLive, noOutput, filterFn) {
       }
       callback();
     });
-    
+
 };
 
-function runExpoCommandWithLogin(expoCommand, callback) {
-    
+function runExpoCommandWithLogin(expoCommand, callback, resetCursorLive, noOutput, filterFn) {
+
   let expo_user = "root";
   let expo_passwd = "root";
-  
+
   let expo_user_env = "EXPO_USER_LOGIN";
   let expo_passwd_env = "EXPO_USER_PASSWD";
-  
+
   if(buildConfig['release']) {
     if(buildConfig['release']['expo-user-env']) {
       expo_user_env = buildConfig['release']['expo-user-env'];
     }
-    
+
     if(buildConfig['release']['expo-passwd-env']) {
       expo_passwd_env = buildConfig['release']['expo-passwd-env'];
     }
   }
-  
+
   if(!process.env[expo_user_env]) {
     throw "No "+expo_user_env+" environment variable was defined! Please define it.";
   } else {
     expo_user = process.env[expo_user_env];
   }
-  
+
   if(!process.env[expo_passwd_env]) {
     throw "No "+expo_passwd_env+" environment variable was defined! Please define it.";
   } else {
     expo_passwd = process.env[expo_passwd_env];
   }
-    
+
   const loginCommand = "cd .. && node node_modules/exp/bin/exp.js login --non-interactive -u \""+expo_user+"\" -p \""+expo_passwd+"\"";
   const logoutCommand = "cd .. && node node_modules/exp/bin/exp.js logout --non-interactive";
-  
+
   console.log("[Expo command] Force try to logout (may-fail mode)...");
   exec(logoutCommand, function (err, stdout, stderr) {
       console.log(stdout);
       console.log(stderr);
       console.log("[Expo command] Try to login with given passwd and username...");
-      
+
       let afterLoginExecuted = false;
       let timeoutKilled = false;
-      
+
       const afterLogin = function() {
         if(afterLoginExecuted) return;
         afterLoginExecuted = true;
         console.log("[Expo command] Try to execute Expo command...");
-        
-        var command = spawn(expoCommand, {
-          shell: true
-        });
 
-        command.stdout.on('data', function (data) {
-          process.stdout.write(data);
-        });
+        runCommand(expoCommand, callback, resetCursorLive, noOutput, filterFn);
 
-        command.stderr.on('data', function (data) {
-          process.stdout.write(data);
-        });
-        
-        command.on('error', (err) => {
-          console.log('Error during execution of Expo command!');
-          console.log(err);
-        });
-
-        command.on('exit', function (code) {
-          console.log('child process exited with code ' + code.toString());
-          console.log("[Expo command] Command execution attempt was performed.");
-          if(code != 0) {
-            throw "Expo command returned a non-zero exit code! (could not execute the Expo command)";
-          }
-          callback(err);
-        });
-        
       };
-      
+
       const loginProcess = exec(loginCommand, function (err, stdout, stderr) {
         if(!timeoutKilled) {
           console.log("[Expo command] Login attempt performed.");
@@ -302,14 +278,14 @@ function runExpoCommandWithLogin(expoCommand, callback) {
           afterLogin();
         }
       });
-      
+
       setTimeout(function(){
           console.log("[Expo command] Killing login command - timeout (skip to executing commands)");
           timeoutKilled = true;
           loginProcess.kill();
           afterLogin();
       }, 5000);
-  
+
   });
 };
 
@@ -326,7 +302,7 @@ function runExpoCommandCaptureAppLink(command, callback) {
     }
     return input;
   };
-  
+
   runExpoCommandWithLogin(command, function(){
     callback(releaseAppLink);
   }, false, false, captureURL);
@@ -334,11 +310,11 @@ function runExpoCommandCaptureAppLink(command, callback) {
 
 function downloadExpoAppRelease(url, releaseFolder, callback) {
   console.log('[Release] Downloading release files from \"'+url+'\"...');
-     
+
   const options = {
     directory: "../"+releaseFolder
   }
-     
+
   download(url, options, function(err){
     if (err) {
       throw err;
@@ -347,7 +323,7 @@ function downloadExpoAppRelease(url, releaseFolder, callback) {
     fs.readdirSync(path.join('..', releaseFolder)).forEach(function(file) {
       console.log(' - '+file);
     });
-    
+
     callback();
   });
 }
@@ -384,7 +360,7 @@ gulp.task('run-jest-tests', function(callback) {
 
 gulp.task('run-flow-tests', function(callback) {
   const filterFn = function(input) {
-    
+
     if (!String.prototype.padStart) {
       String.prototype.padStart = function padStart(targetLength,padString) {
         targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
@@ -400,14 +376,14 @@ gulp.task('run-flow-tests', function(callback) {
         }
       };
     }
-    
+
     if(input.toString().indexOf('Server is initializing') != -1) {
-        
+
       let parsedFilesPart = input.toString().split('parsed files')[1];
       if(parsedFilesPart) {
         parsedFilesPart = parsedFilesPart.split(')')[0];
       }
-        
+
       if(parsedFilesPart) {
         return '\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bLoading... Parsed '+parsedFilesPart.toString().padStart(10)+' files';
       } else {
@@ -450,7 +426,7 @@ gulp.task('release-deploy', function(callback){
       cb();
     }
   };
-  
+
   const copyLinux32 = function(cb) {
     if (fs.existsSync('../release-linux-ia32')) {
       runCommand("cd .. && cp -R ./release-linux-ia32/. release/linux/", function(){
@@ -462,7 +438,7 @@ gulp.task('release-deploy', function(callback){
       cb();
     }
   };
-  
+
   const copyAndroid = function(cb) {
     if (fs.existsSync('../release-android')) {
       runCommand("cd .. && cp -R ./release-android/. release/android/", function(){
@@ -474,7 +450,7 @@ gulp.task('release-deploy', function(callback){
       cb();
     }
   };
-  
+
   const copyIos = function(cb) {
     if (fs.existsSync('../release-ios')) {
       runCommand("cd .. && cp -R ./release-ios/. release/ios/", function(){
@@ -486,7 +462,7 @@ gulp.task('release-deploy', function(callback){
       cb();
     }
   };
-  
+
   const copyWeb = function(cb) {
     if (fs.existsSync('../release-web')) {
       runCommand("cd .. && cp -R ./release-web/. release/web/", function(){
@@ -498,7 +474,7 @@ gulp.task('release-deploy', function(callback){
       cb();
     }
   };
-  
+
   copyWin32(function(){
     copyLinux32(function(){
       copyAndroid(function(){
@@ -665,4 +641,3 @@ gulp.task('test-flow', function(){
 gulp.task('test', function(){
   runSeq('test-flow', 'test-jest');
 });
-
